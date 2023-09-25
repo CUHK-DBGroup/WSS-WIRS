@@ -3,8 +3,9 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <algorithm>
+#include <vector>
 #include "ScapegoatTree.hpp"
-#include "ChunkScapegoatTree.hpp"
 #include "BSTSampling.hpp"
 #include "utility.h"
 #include "basic_alias.hpp"
@@ -207,7 +208,7 @@ void WSSProduceMix(int n,int m,string filename,string tmpfile,int sampleTimes,in
     }
 
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++) {
         if(opt[i].key == -1){
             tmpf << "0 "<<sampleTimes<<"\n";
@@ -288,7 +289,7 @@ void WIRSProduceMix(int n,int m,string filename,string tmpfile,int sampleTimes,i
     }
 
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     int length = (long long)n *cov/100;
     uniform_int_distribution<int> l_random(1, n-1-length);
     for (int i = 0; i < m; i++) {
@@ -340,7 +341,7 @@ void produceIns(int n,int m,string filename,string tmpfile){
     }
     cout<<mx<<endl;
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++) {
         tmpf << "1 " << opt[i].key << " " << opt[i].value << " " << opt[i].weight << '\n';
     }
@@ -380,7 +381,7 @@ void produceDel(int n,int m,string filename,string tmpfile){
     }
     cout<<mx<<endl;
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++)
         tmpf << "2 " << opt[i].key << "\n";
 }
