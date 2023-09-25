@@ -3,8 +3,9 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <algorithm>
+#include <vector>
 #include "ScapegoatTree.hpp"
-#include "ChunkScapegoatTree.hpp"
 #include "BSTSampling.hpp"
 #include "utility.h"
 #include "basic_alias.hpp"
@@ -22,9 +23,9 @@
 Element *element;
 using namespace std;
 
-string dataHome = "/home/mxjiang/DynamicWeightedSetSampling/dataset/";
-string tmpData = "/home/mxjiang/DynamicWeightedSetSampling/tmp.data";
-string resultHome = "/home/mxjiang/DynamicWeightedSetSampling/result";
+string dataHome = "/home/username/DynamicWeightedSetSampling/dataset/";
+string tmpData = "/home/username/DynamicWeightedSetSampling/tmp.data";
+string resultHome = "/home/username/DynamicWeightedSetSampling/result";
 
 int chunkAlias = 0;
 
@@ -37,7 +38,7 @@ int getNum(char *num){
 }
 
 void genUniform(){
-    freopen("/home/mxjiang/DynamicWeightedSetSampling/dataset/Uniform.data","w",stdout);
+    freopen("/home/username/DynamicWeightedSetSampling/dataset/Uniform.data","w",stdout);
     int N = 100000000;
     int W = 10000000;
     XoshiroCpp::Xoroshiro128Plus rng;
@@ -50,7 +51,7 @@ void genUniform(){
 
 
 void genExponential(){
-    freopen("/home/mxjiang/DynamicWeightedSetSampling/dataset/Exponential.data","w",stdout);
+    freopen("/home/username/DynamicWeightedSetSampling/dataset/Exponential.data","w",stdout);
     int N = 100000000;
     double lambda = 1.0/1000;
     XoshiroCpp::Xoroshiro128Plus rng;
@@ -62,7 +63,7 @@ void genExponential(){
 }
 
 void genExponentialExp(){
-    freopen("/home/mxjiang/DynamicWeightedSetSampling/dataset/ExponentialExp.data","w",stdout);
+    freopen("/home/username/DynamicWeightedSetSampling/dataset/ExponentialExp.data","w",stdout);
     int N = 400000000;
     double lambda = 1.0/1000;
     XoshiroCpp::Xoroshiro128Plus rng;
@@ -207,7 +208,7 @@ void WSSProduceMix(int n,int m,string filename,string tmpfile,int sampleTimes,in
     }
 
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++) {
         if(opt[i].key == -1){
             tmpf << "0 "<<sampleTimes<<"\n";
@@ -288,7 +289,7 @@ void WIRSProduceMix(int n,int m,string filename,string tmpfile,int sampleTimes,i
     }
 
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     int length = (long long)n *cov/100;
     uniform_int_distribution<int> l_random(1, n-1-length);
     for (int i = 0; i < m; i++) {
@@ -340,7 +341,7 @@ void produceIns(int n,int m,string filename,string tmpfile){
     }
     cout<<mx<<endl;
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++) {
         tmpf << "1 " << opt[i].key << " " << opt[i].value << " " << opt[i].weight << '\n';
     }
@@ -380,7 +381,7 @@ void produceDel(int n,int m,string filename,string tmpfile){
     }
     cout<<mx<<endl;
     tmpf << m << '\n';
-    random_shuffle(opt.begin(),opt.end());
+    shuffle(opt.begin(),opt.end(), gen);
     for (int i = 0; i < m; i++)
         tmpf << "2 " << opt[i].key << "\n";
 }
