@@ -44,7 +44,6 @@ public:
         Bucket(int _id, double _max_weight) {
             id = _id, max_weight = _max_weight;
             //ele_size = 0;
-
             bucket_weight = 0;
             //max_weight = 0;
         }
@@ -56,12 +55,13 @@ public:
         vector<Element> elements;
     };
 
+
     int log2_evil(double d) {
         return ((reinterpret_cast<unsigned long long&>(d) >> 52) & 0x7ff) - 1023;
     }
     //set<Element> weight_bst;
     int find_bucket(const double& _weight) {
-        return log2_evil(_weight);
+        return log2(_weight);
     }
 
     int log2_floor(const double& num) {
@@ -79,14 +79,12 @@ public:
         ele_size = 0;
         rest_weight = 0;
         position_map.reserve(all_ele.size());
-        //cerr << "Bucket_size:" << position_map.bucket_count();
         //sort(all_ele.begin(), all_ele.end(), cmp_element_weight);
         for (int i = 0; i < num; i++) {
             int bucket_idx = find_bucket(all_ele[i].weight);
             BucketInsert(bucket_idx, all_ele[i]);
             //cerr << all_ele[i].weight << " " << bucket_map[bucket_idx].max_weight << "\n";
         }
-        cerr << "BuildNum:" << num << "\n";
         prepare_alias = use_alias = largest_bucket_id = clean_largest_bucket_id = 0;
         clean_bucket_list = 0;
 
@@ -177,32 +175,29 @@ public:
         }
     }
     //randomly generate
+    void collect_buckets() {
+        tmp_bucket_list.clear();
+        bool major_flag = 0;
+        int left_range = largest_bucket_id - 2 * log2_ceil(ele_size);
+        for (int i = largest_bucket_id; i >= left_range; i--) {
+            if (bucket_map.find(i) != bucket_map.end()) {
+                tmp_bucket_list.push_back(make_pair(bucket_map[i].bucket_weight, &bucket_map[i]));
+            }
+        }
+
+        clean_bucket_list = true;
+    }
+
     Bucket* get_random_bucket() {
         int cur_block_id = 0;
-        if (!clean_bucket_list) {
-            tmp_bucket_list.clear();
-            bool major_flag = 0;
-            //cerr << largest_bucket_id << " " << clean_largest_bucket_id << "\n";
-            int left_range = largest_bucket_id - 2 * log2_ceil(ele_size);
-            //cerr <<"random_weight:" << random_bucket_weight << "\n";
-            for (int i = largest_bucket_id; i >= left_range; i--) {
-                if (bucket_map.find(i) != bucket_map.end()) {
-                    //cerr << bucket_map[i].id << " " << bucket_map[i].elements.size() << "\n";
-                    tmp_bucket_list.push_back(make_pair(bucket_map[i].bucket_weight, &bucket_map[i]));
-                }
-            }
-
-            clean_bucket_list = true;
-        }
-        //for (auto i : tmp_bucket_list) {
-        //    cerr << i.second->id << " ";
+        //if (!clean_bucket_list) {
+        //    collect_buckets();
         //}
 
         uniform_real_distribution<double> dr(0, tot_weight);
         double random_bucket_weight = dr(rng);
         for (auto i : tmp_bucket_list) {
             if (random_bucket_weight <= i.first) {
-                //cerr <<"random_bucket" << i.second->id << "\n";
                 return i.second;
             }
             random_bucket_weight -= i.first;
@@ -228,7 +223,6 @@ public:
                 create_alias();
             }
             cur_block_id = bucket_alias.random_sample_value();
-            //cerr << cur_block_id << "\n";
             if (cur_block_id == small_event) {
                 find_largest_bucket_id();
                 uniform_real_distribution<double> dr(0, rest_weight);
@@ -251,162 +245,45 @@ public:
                 find_largest_bucket_id();
             }
             if (!clean_bucket_list) {
-                get_random_bucket();
+                collect_buckets();
             }
-            //cur_bucket = get_random_bucket();
-
+            bool major_flag = 0;
             cur_bucket = tmp_bucket_list[tmp_bucket_list.size() - 1].second;
             uniform_real_distribution<double> dr(0, tot_weight);
             double random_bucket_weight = dr(rng);
             for (auto i : tmp_bucket_list) {
                 if (random_bucket_weight <= i.first) {
-                    //cerr <<"random_bucket" << i.second->id << "\n";
+                    major_flag = 1;
                     cur_bucket = i.second;
                     break;
                 }
                 random_bucket_weight -= i.first;
             }
-
-            /* bool major_flag = 0;
-             int left_range = largest_bucket_id - 2 * log2_ceil(ele_size);
-             uniform_real_distribution<double> dr(0, tot_weight);
-             double random_bucket_weight = dr(rng);
-             for (int i = largest_bucket_id; i >= left_range; i--) {
-                 if (bucket_map.find(i) != bucket_map.end()) {
-                     if (random_bucket_weight <= bucket_map[i].bucket_weight) {
-                         cur_block_id = i;
-                         major_flag = 1;
-                         break;
-                     }
-                     else {
-                         random_bucket_weight -= bucket_map[i].bucket_weight;
-                     }
-                 }
-             }
-             if (major_flag == 0) {
-                 for (auto i : bucket_map) {
-                     if (i.first < left_range) {
-                         if (random_bucket_weight <= i.second.bucket_weight) {
-                             cur_block_id = i.first;
-                             break;
-                         }
-                         else random_bucket_weight -= i.second.bucket_weight;
-                     }
-                 }
-             }*/
-
-        }
-        //Bucket& cur_block = bucket_map[cur_block_id];
-        uniform_int_distribution<int> pos_rand(0, cur_bucket->elements.size() - 1);
-        uniform_real_distribution<double> dr2(0, cur_bucket->max_weight);
-        int tmp_pos;
-        double rej_weight;
-        while (1) {
-            //start = chrono::system_clock::now();
-            tmp_pos = pos_rand(rng);
-            rej_weight = dr2(rng);
-            //end = chrono::system_clock::now();
-            //random_generate_seconds += end - start;
-            if (rej_weight > cur_bucket->elements[tmp_pos].weight)
-                continue;
-            else {
-                return cur_bucket->elements[tmp_pos].value;
-            }
-        }
-    }
-
-
-    inline int random_sample_value_ins() {
-        int cur_block_id;
-        //print_bucket();
-        if (use_alias) {
-            if (!prepare_alias) {
-                create_alias();
-            }
-            cur_block_id = bucket_alias.random_sample_value();
-            //cerr << cur_block_id << "\n";
-            if (cur_block_id == small_event) {
-                find_largest_bucket_id();
-                uniform_real_distribution<double> dr(0, rest_weight);
-                double random_bucket_weight = dr(rng);
+            if (!major_flag) {
                 int left_range = largest_bucket_id - 2 * log2_ceil(ele_size);
                 for (auto i : bucket_map) {
                     if (i.first < left_range) {
                         if (random_bucket_weight <= i.second.bucket_weight) {
-                            cur_block_id = i.first;
+                            cur_bucket = &i.second;
                             break;
                         }
                         else random_bucket_weight -= i.second.bucket_weight;
                     }
                 }
             }
-        }
-        else {
-            uniform_real_distribution<double> dr(0, tot_weight);
-            //    return dr(rng);
-
-            if (!clean_largest_bucket_id) {
-                find_largest_bucket_id();
-            }
-            if (!clean_bucket_list) {
-                get_random_bucket();
-            }
-            //cur_bucket = get_random_bucket();
-
-            double random_bucket_weight = dr(rng);
-            for (int i = 0; i < tmp_ins_bucket_list.size(); i++) {
-                if (random_bucket_weight <= tmp_ins_bucket_list[i].bucket_weight) {
-                    //cerr <<"random_bucket" << i.second->id << "\n";
-                    cur_block_id = i;
-                    break;
-                }
-                random_bucket_weight -= tmp_ins_bucket_list[i].bucket_weight;
-            }
-
-            /* bool major_flag = 0;
-             int left_range = largest_bucket_id - 2 * log2_ceil(ele_size);
-             uniform_real_distribution<double> dr(0, tot_weight);
-             double random_bucket_weight = dr(rng);
-             for (int i = largest_bucket_id; i >= left_range; i--) {
-                 if (bucket_map.find(i) != bucket_map.end()) {
-                     if (random_bucket_weight <= bucket_map[i].bucket_weight) {
-                         cur_block_id = i;
-                         major_flag = 1;
-                         break;
-                     }
-                     else {
-                         random_bucket_weight -= bucket_map[i].bucket_weight;
-                     }
-                 }
-             }
-             if (major_flag == 0) {
-                 for (auto i : bucket_map) {
-                     if (i.first < left_range) {
-                         if (random_bucket_weight <= i.second.bucket_weight) {
-                             cur_block_id = i.first;
-                             break;
-                         }
-                         else random_bucket_weight -= i.second.bucket_weight;
-                     }
-                 }
-             }*/
 
         }
-        //Bucket& cur_block = bucket_map[cur_block_id];
-        uniform_int_distribution<int> pos_rand(0, tmp_ins_bucket_list[cur_block_id].elements.size() - 1);
-        uniform_real_distribution<double> dr2(0, tmp_ins_bucket_list[cur_block_id].max_weight);
+        uniform_int_distribution<int> pos_rand(0, cur_bucket->elements.size() - 1);
+        uniform_real_distribution<double> dr2(0, cur_bucket->max_weight);
         int tmp_pos;
         double rej_weight;
         while (1) {
-            //start = chrono::system_clock::now();
             tmp_pos = pos_rand(rng);
             rej_weight = dr2(rng);
-            //end = chrono::system_clock::now();
-            //random_generate_seconds += end - start;
-            if (rej_weight > tmp_ins_bucket_list[cur_block_id].elements[tmp_pos].weight)
+            if (rej_weight > cur_bucket->elements[tmp_pos].weight)
                 continue;
             else {
-                return tmp_ins_bucket_list[cur_block_id].elements[tmp_pos].value;
+                return cur_bucket->elements[tmp_pos].value;
             }
         }
     }
@@ -501,10 +378,8 @@ public:
     // key -> <bucket_id, element position in bucket>
     // maintain non-empty bucket
     robin_hood::unordered_map<int, Bucket> bucket_map;
-    //robin_hood::unordered_map<int, double> bucket_map_weight;
     uniform_int_distribution<int> pos_rand;
     aliasMethod bucket_alias;
     vector<pair<double, Bucket*> > tmp_bucket_list;
     vector<Bucket> tmp_ins_bucket_list;
-    //uniform_real_distribution<float> dr;
 };

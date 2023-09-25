@@ -7,8 +7,7 @@ This repository implements dynamic weighted set sampling (WSS) and weighted inde
 4. Given a range $[l,r]$, perform $t$ weighted samplings from all elements whose keys belong to this range.
 
 ## About the running environment
-All experiments are conducted on a Linux machine with an Intel Xeon(R) CPU with 256GB memory. All methods are implemented in C++ and compiled with full optimization.
-
+All experiments were conducted on a Linux machine with an Intel Xeon(R) CPU and 256GB of memory, running Ubuntu 18.04.1 LTS. All methods were implemented in C++ and compiled with full optimization.
 ## About the datasets
 All the real world datasets used can be downloaded by clicking on the link below and then cleaned in a similar way. Datasets:
 [USA Road Networks](http://users.diag.uniroma1.it/challenge9/download.shtml), [Delicious](http://delicious.com/), [Twitter](https://anlab-kaist.github.io/traces/).
@@ -16,29 +15,49 @@ All the real world datasets used can be downloaded by clicking on the link below
 In addition to the real-world dataset, synthetic datasets are generated to test all the methods. We use uniform_distribution and exponential_distribution to generate two datasets.
 
 ## Compile the code
-Please note that the path of the input dataset needs to be configured by modifying the code. After you have configured the file path, you can execute the following commands to generate the executable file *---*.
+Please note that the path of the input dataset needs to be configured by modifying the code. Specifically, the variable *dataHome* represents the path to the dataset, *tmpData* indicates the path for storing intermediate results during program execution, and *resultHome* signifies the path for storing the results of the test program. You can easily locate these in the *main.cpp* file.
+
+After you have configured the file path, you can execute the following commands to generate the executable file *DynamicWeighteSetSampling*.
 
 ```sh
-$ cd src
+$ cd WSSWIRS
 $ make clean
 $ make
 ```
-After compiling the code, an executable file called *---* is generated.
+After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
 
 
 ## Run the code
-After placing the dataset, one can run the following command directly. For the {testName} problem, execute tests of {op} operation on {fileName} dataset.
-<!-- cleaning the dataset, you can run the following command directly. Build the BOTBIN of dataset {file_id} with the paramet $\rho$ and $\delta$. -->
+After placing the dataset, one can run the following command directly. For the {testName} problem, execute tests of {op} operation on {fileName} dataset，and output the runtime and required memory space size.
 ```sh
-$ ./DynamicWeightedSetSampling {testName} {fileName} {op} [parameters]
+$ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} {op} [parameters]
+$ ./DynamicWeightedSetSampling WIRS {fileName} {dataNum} {op} [parameters]
 ```
-The {testName} can be set as *WSS* or *WIRS*. Details about the parameters {op} for the different operations and other corresponding [parameters] that need to be set can be found in the code.
+The {dataNum} represents the number of elements in the dataset. The parameter {op} represents the name of the operation to be tested, including *build*, *query*, *ins*, *del*, *mix*, etc. Different [parameters] are required for each operation. Here are some examples:
+* If you want to test the construction speed of {method} in the *WSS* problem, you need to enter the command:
+  ```sh
+  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} build {method} {dataNum} {id}
+  ```
+  Where {id} represents the test identifier used to distinguish the output results of multiple tests.
+* If you need to test the insertion speed of all methods for the *WSS* problem, you need to enter the command:
+  ```sh
+  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} ins {method} {optNum} 
+  ```
+  Where {optNum} represents the number of insertion operation.
+* If you need to test the insertion speed of all methods for the *WSS* problem, you need to enter the command:
+  ```sh
+  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} mix {method} {optNum} {updatePercent} {sampleTimes}
+  ```
+  Where {optNum} represents the number of insertion operation, {updatePercent} is an integer less than 100, indicating the percentage of update operations relative to the total operations, while {sampleTimes}represents the number of samples for each query operation.
+
+Details about the parameters {op} for other different operations and other corresponding [parameters] that need to be set can be found in the code.
 ## About the code
 
-* main.cpp has some examples of how to construct data structures, and how to modify them.
-* *BST.hpp* and *basic_bst.hpp* includes the implementation of BST sampling methods.
+* *main.cpp*  has some examples of how to construct data structures, and how to modify them.
+* *basic_bst.hpp* includes the implementation of BST sampling methods for WSS problem.
 * *basic_alias.hpp* includes the implementation of alias sampling method.
 * *QuickBucket.hpp* includes the implementation of BUS sampling method.
+* *BST.hpp*includes the implementation of BST sampling methods for WIRS problem.
 * *scapegoatTree.hpp* implements a $O(n\log{n})$ structure for the WIRS problem.
 * *QuickChunkScapegoatTree.hpp* implements a linear space structure for the WIRS problem, and it supports modifiable chunk size.
 * Read the code for more details.
