@@ -1,0 +1,10 @@
+basic bst tree build_time:0.00118
+basic bst Operation_time:0.050722
+basic average bst Operation_time:50722
+bst_memory 2288mb
+-----------------------------------
+basic bucket build_time:0.000364
+basic bucket Operation_time:0.013535
+basic average bucket Operation_time:13535
+bucket_memory 2816mb
+-----------------------------------

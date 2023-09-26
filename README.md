@@ -17,15 +17,16 @@ In addition to the real-world dataset, synthetic datasets are generated to test 
 ## Input format
 An input dataset should contain multiple lines, with each line consisting of two integers and one real number separated by spaces, representing the three attributes <key, value, weight> of an element, respectively.
 
-、、、
+```
 key_1 value_1 weight_1
 key_2 value_2 weight_2
 ...
 key_i value_i weight_i
 ...
-、、、
+```
 
-In which the i-th line represents the i-th element with key key_i, value value_i, and will be sampled with a weight of weight_i. A simple input dataset can be found at "WSSWIRS/dataset/input.data" as an example.
+In which the i-th line represents the i-th element with key *key_i*, value *value_i*, and will be sampled with a weight of *weight_i*. 
+A simple input dataset can be found at *WSSWIRS/dataset/Uniform.data* as an example. The file contains ten thousand records, with the weight of each record uniformly distributed between 1 and 1000.
 ## Compile the code
 Please note that the path of the input dataset needs to be configured by modifying the code. Specifically, the variable *dataHome* represents the path to the dataset, *tmpData* indicates the path for storing intermediate results during program execution, and *resultHome* signifies the path for storing the results of the test program. You can easily locate these in the *main.cpp* file.
 
@@ -52,17 +53,22 @@ The {dataNum} represents the number of elements in the dataset. The parameter {o
   Where {id} represents the test identifier used to distinguish the output results of multiple tests.
 * If you need to test the insertion speed of all methods for the *WSS* problem, you need to enter the command:
   ```sh
-  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} ins {method} {optNum} 
+  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} ins {optNum} 
   ```
   Where {optNum} represents the number of insertion operation.
 * If you need to test the mix operation speed of all methods for the *WSS* problem, you need to enter the command:
   ```sh
-  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} mix {method} {optNum} {updatePercent} {sampleTimes}
+  $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} mix {optNum} {updatePercent} {sampleTimes}
   ```
   Where {optNum} represents the number of insertion operation, {updatePercent} is an integer less than 100, indicating the percentage of update operations relative to the total operations, while {sampleTimes}represents the number of samples for each query operation.
 
 Details about the parameters {op} for other different operations and other corresponding [parameters] that need to be set can be found in the code.
 ## Example
+Taking *Uniform.data* as an example, run the following command:
+```shell
+$ ./DynamicWeightedSetSampling WSS Uniform mix 10000 1000 50 1000
+```
+This command will read 10,000 records from *Uniform.data* and perform *1,000* mixed operations. Among these operations, *50%* will be updates (half insertions and half deletions), and for the other *50%* operations, each operation will perform *1,000* sample operations. The consumed time will be stored in */WSSWIRS/result/WSS/mix/Uniform_n_10000_m_1000_percent_50_sampleTimes_1000*.
 ## About the code
 
 * *main.cpp*  has some examples of how to construct data structures, and how to modify them.

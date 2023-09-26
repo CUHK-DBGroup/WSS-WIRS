@@ -23,9 +23,9 @@
 Element *element;
 using namespace std;
 
-string dataHome = "/home/username/DynamicWeightedSetSampling/dataset/";
-string tmpData = "/home/username/DynamicWeightedSetSampling/tmp.data";
-string resultHome = "/home/username/DynamicWeightedSetSampling/result";
+string dataHome = "/Users/username/WSS-WIRS/WSSWIRS/dataset/";
+string tmpData = "/Users/username/WSS-WIRS/WSSWIRS/tmp.data";
+string resultHome = "/Users/username/WSS-WIRS/WSSWIRS/result";
 
 int chunkAlias = 0;
 
@@ -38,9 +38,9 @@ int getNum(char *num){
 }
 
 void genUniform(){
-    freopen("/home/username/DynamicWeightedSetSampling/dataset/Uniform.data","w",stdout);
-    int N = 100000000;
-    int W = 10000000;
+    freopen("/Users/oldjang/CLionProjects/WSS-WIRS/WSSWIRS/dataset/Uniform.data","w",stdout);
+    int N = 10000;
+    int W = 10000;
     XoshiroCpp::Xoroshiro128Plus rng;
 //    exponential_distribution<double> dr(1);
     uniform_int_distribution<int> dr(1,W);
@@ -143,6 +143,7 @@ void WIRSProduceQuery(int n,int m,string filename,string tmpfile,int sampleTimes
 void WSSProduceMix(int n,int m,string filename,string tmpfile,int sampleTimes,int percent){
     ifstream inFile;
     inFile.open(filename.c_str());
+    cout<< filename<<endl;
 
     ofstream tmpf;
     tmpf.open(tmpfile.c_str());
@@ -958,6 +959,7 @@ void test_alias_distribution(int n,int m,string name){
 }
 
 int main(int argc,char *argv[]) {
+//    genUniform();
     if(argc==4){
         string testName = argv[1];
         int dataNum = getNum(argv[2]);
@@ -1001,6 +1003,7 @@ int main(int argc,char *argv[]) {
             string resultFile =
                     resultHome + "/" + testName + "/" + op + "/" + filename + "_n_" + to_string(dataNum) + "_m_" +
                     to_string(optNum)+"_percent_"+ to_string(updatePercent)+"_sampleTimes_"+ to_string(sampleTimes);
+            cout<<resultFile<<endl;
             WSSTest(3, false, resultFile);
         }
         else if(op=="mixA"){
