@@ -44,7 +44,7 @@ The {dataNum} represents the number of elements in the dataset. The parameter {o
   $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} ins {method} {optNum} 
   ```
   Where {optNum} represents the number of insertion operation.
-* If you need to test the insertion speed of all methods for the *WSS* problem, you need to enter the command:
+* If you need to test the mix operation speed of all methods for the *WSS* problem, you need to enter the command:
   ```sh
   $ ./DynamicWeightedSetSampling WSS {fileName} {dataNum} mix {method} {optNum} {updatePercent} {sampleTimes}
   ```
