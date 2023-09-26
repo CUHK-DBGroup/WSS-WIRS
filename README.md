@@ -7,13 +7,25 @@ This repository implements dynamic weighted set sampling (WSS) and weighted inde
 4. Given a range $[l,r]$, perform $t$ weighted samplings from all elements whose keys belong to this range.
 
 ## About the running environment
-All experiments were conducted on a Linux machine with an Intel Xeon(R) CPU and 256GB of memory, running Ubuntu 18.04.1 LTS. All methods were implemented in C++ and compiled with full optimization.
+All experiments were conducted on a Linux machine with an Intel Xeon(R) CPU and 256GB of memory, running Ubuntu 18.04.1 LTS. We have implemented all methods using the C++17 standard and turned on the O3 optimization flag.
 ## About the datasets
 All the real world datasets used can be downloaded by clicking on the link below and then cleaned in a similar way. Datasets:
 [USA Road Networks](http://users.diag.uniroma1.it/challenge9/download.shtml), [Delicious](http://delicious.com/), [Twitter](https://anlab-kaist.github.io/traces/).
 
 In addition to the real-world dataset, synthetic datasets are generated to test all the methods. We use uniform_distribution and exponential_distribution to generate two datasets.
 
+## Input format
+An input dataset should contain multiple lines, with each line consisting of two integers and one real number separated by spaces, representing the three attributes <key, value, weight> of an element, respectively.
+
+、、、
+key_1 value_1 weight_1
+key_2 value_2 weight_2
+...
+key_i value_i weight_i
+...
+、、、
+
+In which the i-th line represents the i-th element with key key_i, value value_i, and will be sampled with a weight of weight_i. A simple input dataset can be found at "WSSWIRS/dataset/input.data" as an example.
 ## Compile the code
 Please note that the path of the input dataset needs to be configured by modifying the code. Specifically, the variable *dataHome* represents the path to the dataset, *tmpData* indicates the path for storing intermediate results during program execution, and *resultHome* signifies the path for storing the results of the test program. You can easily locate these in the *main.cpp* file.
 
@@ -21,11 +33,10 @@ After you have configured the file path, you can execute the following commands 
 
 ```sh
 $ cd WSSWIRS
-$ make clean
+$ cmake ..
 $ make
 ```
-After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
-
+Note that the CMake version should be higher than 3.22, and the g++ version should be 11.1.0. After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
 
 ## Run the code
 After placing the dataset, one can run the following command directly. For the {testName} problem, execute tests of {op} operation on {fileName} dataset，and output the runtime and required memory space size.
@@ -51,6 +62,7 @@ The {dataNum} represents the number of elements in the dataset. The parameter {o
   Where {optNum} represents the number of insertion operation, {updatePercent} is an integer less than 100, indicating the percentage of update operations relative to the total operations, while {sampleTimes}represents the number of samples for each query operation.
 
 Details about the parameters {op} for other different operations and other corresponding [parameters] that need to be set can be found in the code.
+## Example
 ## About the code
 
 * *main.cpp*  has some examples of how to construct data structures, and how to modify them.
