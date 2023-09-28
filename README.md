@@ -1,3 +1,16 @@
+Please cite our papers if you choose to use our code.
+```
+@inproceedings{WSSWIRS,
+  author    = {Fangyuan Zhang and
+               Mengxu Jiang and
+               Sibo Wang},
+  title     = { Efficient Dynamic Weighted Set Sampling and Its Extension },
+  booktitle = {{VLDB} 2024},
+  pages     = {15--27},
+  year      = {2024},
+}
+
+```
 # Efficient Dynamic Weighted Set Sampling and Its Extension
 
 This repository implements dynamic weighted set sampling (WSS) and weighted independent range sampling (WIRS) of *Efficient Dynamic Weighted Set Sampling and Its Extension*. For a set of elements with three attributes <key, value, weight>, it can support the following operations
@@ -7,7 +20,7 @@ This repository implements dynamic weighted set sampling (WSS) and weighted inde
 4. Given a range $[l,r]$, perform $t$ weighted samplings from all elements whose keys belong to this range.
 
 ## About the running environment
-All experiments were conducted on a Linux machine with an Intel Xeon(R) CPU and 256GB of memory, running Ubuntu 18.04.1 LTS. We have implemented all methods using the C++17 standard and turned on the O3 optimization flag.
+All experiments were conducted on a Linux machine with an Intel Xeon(R) CPU and 256GB of memory, running Ubuntu 18.04.1 LTS and the g++ version is 11.1.0. We have implemented all methods using the C++17 standard and turned on the O3 optimization flag.
 ## About the datasets
 All the real world datasets used can be downloaded by clicking on the link below and then cleaned in a similar way. Datasets:
 [USA Road Networks](http://users.diag.uniroma1.it/challenge9/download.shtml), [Delicious](http://delicious.com/), [Twitter](https://anlab-kaist.github.io/traces/).
@@ -37,7 +50,7 @@ $ cd WSSWIRS
 $ cmake ..
 $ make
 ```
-Note that the CMake version should be higher than 3.22, and the g++ version should be 11.1.0. After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
+Note that the CMake version should be higher than 3.22. After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
 
 ## Run the code
 After placing the dataset, one can run the following command directly. For the {testName} problem, execute tests of {op} operation on {fileName} dataset，and output the runtime and required memory space size.
