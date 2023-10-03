@@ -1,14 +1,17 @@
 Please cite our papers if you choose to use our code.
 ```
-@inproceedings{WSSWIRS,
+@article{ZhangJW23,
   author    = {Fangyuan Zhang and
                Mengxu Jiang and
                Sibo Wang},
   title     = { Efficient Dynamic Weighted Set Sampling and Its Extension },
-  booktitle = {{VLDB} 2024},
-  pages     = {15--27},
-  year      = {2024},
+  journal      = {Proc. {VLDB} Endow.},
+  volume       = {17},
+  number       = {1},
+  pages        = {15-27},
+  year         = {2023},
 }
+
 
 ```
 # Efficient Dynamic Weighted Set Sampling and Its Extension
