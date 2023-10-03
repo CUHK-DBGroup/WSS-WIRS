@@ -50,7 +50,7 @@ After you have configured the file path, you can execute the following commands 
 
 ```sh
 $ cd WSSWIRS
-$ cmake ..
+$ cmake .
 $ make
 ```
 Note that the CMake version should be higher than 3.22. After compiling the code, an executable file called *DynamicWeighteSetSampling* is generated.
